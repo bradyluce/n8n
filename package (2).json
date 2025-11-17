@@ -1,0 +1,7 @@
+{
+  "name": "custom-n8n",
+  "version": "1.0.0",
+  "description": "Custom n8n build with PDFco community nodes",
+  "main": "index.js",
+  "license": "MIT"
+}
