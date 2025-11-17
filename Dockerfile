@@ -2,18 +2,18 @@ FROM n8nio/n8n:latest
 
 USER root
 
-# Install the PDFco community node WITHOUT running its postinstall scripts
-RUN npm install -g --ignore-scripts n8n-nodes-pdfco
-
-# Create the n8n community nodes directory
-RUN mkdir -p /home/node/.n8n/nodes
-
-# Symlink the installed PDFco node to n8n's node directory
-RUN ln -s /usr/local/lib/node_modules/n8n-nodes-pdfco /home/node/.n8n/nodes/n8n-nodes-pdfco
-
-# Fix permissions so n8n can read/write
-RUN chown -R node:node /home/node/.n8n
+# Create custom directory for community nodes
+RUN mkdir -p /home/node/custom && chown -R node:node /home/node/custom
 
 USER node
 
-CMD [ "n8n" ]
+# Install PDFco node into custom directory WITHOUT running its postinstall script
+RUN cd /home/node/custom && npm install --ignore-scripts n8n-nodes-pdfco
+
+# Tell n8n to load nodes from the custom folder
+ENV NODE_FUNCTION_ALLOW_EXTERNAL=*
+ENV NODE_PATH=/home/node/custom/node_modules
+
+# Start n8n normally
+CMD ["n8n"]
+
